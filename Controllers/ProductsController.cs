@@ -67,11 +67,12 @@ namespace dvcsharp_core_api
          if (String.IsNullOrEmpty(keyword)) {
             return Ok("Cannot search without a keyword");
          }
+//fixing sql injection
+         		var query = "SELECT * FROM Products WHERE name LIKE @keyword OR description LIKE @keyword";
+		    var products = _context.Products
+		        .FromSqlRaw(query, new SqlParameter("keyword", "%" + keyword + "%"))
+		        .ToList();
 
-         var query = $"SELECT * From Products WHERE name LIKE '%{keyword}%' OR description LIKE '%{keyword}%'";
-         var products = _context.Products
-            .FromSql(query)
-            .ToList();
 
          return Ok(products);
       }
