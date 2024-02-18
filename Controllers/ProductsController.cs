@@ -62,20 +62,20 @@ namespace dvcsharp_core_api
       }
 
       [HttpGet("search")]
-      public IActionResult Search(string keyword)
-      {
-         if (String.IsNullOrEmpty(keyword)) {
-            return Ok("Cannot search without a keyword");
-         }
+    public IActionResult Search(string keyword)
+{
+    if (String.IsNullOrEmpty(keyword))
+    {
+        return Ok("Cannot search without a keyword");
+    }
 
-         var query = $"SELECT * From Products WHERE name LIKE '%{keyword}%' OR description LIKE '%{keyword}%'";
-         var products = _context.Products
-            .FromSql(query)
-            .ToList();
-
-         return Ok(products);
-      }
-
+    var query = "SELECT * From Products WHERE name LIKE @keyword OR description LIKE @keyword";
+    var parameter = new SqlParameter("@keyword", $"%{keyword}%");
+    var products = _context.Products
+        .FromSqlRaw(query, parameter)
+        .ToList();
+return Ok(products);
+}
       [HttpPost("import")]
       public IActionResult Import()
       {
