@@ -26,7 +26,18 @@ namespace dvcsharp_core_api
       public IActionResult Post()
       {
          XmlDocument xmlDocument = new XmlDocument();
-         xmlDocument.Load(HttpContext.Request.Body);
+         //xmlDocument.Load(HttpContext.Request.Body);
+
+             // Implement proper validation and secure parsing of XML data 
+    // e.g., using XmlReader with appropriate settings to prevent XXE attacks
+    
+    using (XmlReader reader = XmlReader.Create(HttpContext.Request.Body, new XmlReaderSettings {
+        DtdProcessing = DtdProcessing.Prohibit
+    })) 
+    {
+        xmlDocument.Load(reader);
+    }
+
 
          var entities = new List<Object>();
 
